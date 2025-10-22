@@ -1,6 +1,5 @@
 from flask import Flask
 from instabot import Bot
-import os
 
 app = Flask(__name__)
 
@@ -17,7 +16,7 @@ def home():
 @app.route('/follow')
 def follow_user():
     try:
-        bot = Bot()  # Create bot inside route
+        bot = Bot()  # Create bot inside route to prevent startup crash
         bot.login(username=INSTAGRAM_USERNAME, password=INSTAGRAM_PASSWORD)
         bot.follow(TARGET_USER)
         bot.logout()
@@ -26,6 +25,4 @@ def follow_user():
         return f"❌ Error: {e}"
 
 if __name__ == "__main__":
-    # Render sets the port dynamically
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    app.run()  # No host, no port specified
