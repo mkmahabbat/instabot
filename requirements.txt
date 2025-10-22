@@ -1,2 +1,2 @@
 flask==3.0.3
-instabot-py==0.7.18
+instabot==0.117.0
