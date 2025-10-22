@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: instabot-web
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: INSTA_USERNAME
+        value: "mk_test_xx_1"
+      - key: INSTA_PASSWORD
+        value: "mahabbat@2008"
+      - key: INSTA_TARGET
+        value: "mk__mahabbat"
