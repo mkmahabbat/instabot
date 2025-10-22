@@ -1,7 +1,18 @@
-from flask import Flask
+from flask import Flask, request
 from instabot import Bot
+import os
 
 app = Flask(__name__)
+
+# ---------- CONFIGURATION ----------
+# Use environment variables for safety
+INSTAGRAM_USERNAME = os.getenv("INSTA_USERNAME", "mk_test_xx_1")
+INSTAGRAM_PASSWORD = os.getenv("INSTA_PASSWORD", "mahabbat@2008")
+TARGET_USER = os.getenv("INSTA_TARGET", "mk__mahabbat")
+
+# Optional: protect the /follow route with a secret key
+SECRET_KEY = os.getenv("FOLLOW_SECRET", "mysecret123")
+# -----------------------------------
 
 @app.route('/')
 def home():
@@ -9,19 +20,21 @@ def home():
 
 @app.route('/follow')
 def follow_user():
-    # ⚠️ Educational only — do not hardcode real passwords in production
-    username = "mk_test_xx_1"
-    password = "mahabbat@2008"
-    target = "mk__mahabbat"
+    # Check secret key
+    key = request.args.get("key")
+    if key != SECRET_KEY:
+        return "🚫 Unauthorized access"
 
-    bot = Bot()
     try:
-        bot.login(username=username, password=password)
-        bot.follow(target)
+        bot = Bot()  # Create bot inside route
+        bot.login(username=INSTAGRAM_USERNAME, password=INSTAGRAM_PASSWORD)
+        bot.follow(TARGET_USER)
         bot.logout()
-        return f"🎯 Followed user: {target}"
+        return f"🎯 Followed user: {TARGET_USER}"
     except Exception as e:
         return f"❌ Error: {e}"
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+if __name__ == "__main__":
+    # Render requires using the PORT environment variable
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
